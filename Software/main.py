@@ -12,7 +12,7 @@ from os import system
 from os.path import isfile, join
 from time import sleep
 import multiprocessing as mp
-from gpiozero import LED
+from gpiozero import Servo
 
 
 try:
@@ -53,7 +53,7 @@ g_number_of_allocated_ncs = 0
 LABELS = ["neutral", "happy", "sad", "surprise", "anger"]
 COLORS = np.random.uniform(0, 255, size=(len(LABELS), 3))
 
-led = LED(17)
+servo = Servo(17)
 
 def camThread(LABELS, resultsEm, frameBuffer, camera_width, camera_height, vidfps, number_of_camera, mode_of_camera):
     global fps
@@ -333,7 +333,9 @@ class NcsWorkerEm(BaseNcsWorker):
                     out = self.exec_net.requests[dev].outputs["prob_emotion"].flatten()
                     emotion = LABELS[int(np.argmax(out))]
                     if emotion == "happy":
-                        lightLED()
+                        servoUp()
+                    else if emotion == "sad":
+                        servoDown()
                     detection_list.extend([emotion])
                     self.resultsEm.put([detection_list])
                     self.inferred_request[dev] = 0
@@ -492,9 +494,12 @@ if __name__ == '__main__':
         print("\n\nFinished\n\n")
 
 
-def lightLED()
-    led.on()
-    sleep(1)
-    led.off()
+def servoUp():
+    servo.max()
     sleep(1)
     print("Happiness detected.")
+
+def servoDown():
+    servo.min()
+    sleep(1)
+    print("Sadness detected.")
