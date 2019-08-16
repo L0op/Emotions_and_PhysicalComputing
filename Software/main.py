@@ -53,7 +53,10 @@ g_number_of_allocated_ncs = 0
 LABELS = ["neutral", "happy", "sad", "surprise", "anger"]
 COLORS = np.random.uniform(0, 255, size=(len(LABELS), 3))
 
-servo = Servo(17)
+happyServo = Servo(12)
+sadServo = Servo(13)
+angreyServo = Servo(18)
+
 
 def camThread(LABELS, resultsEm, frameBuffer, camera_width, camera_height, vidfps, number_of_camera, mode_of_camera):
     global fps
@@ -332,10 +335,16 @@ class NcsWorkerEm(BaseNcsWorker):
                     self.exec_net.requests[dev].wait(-1)
                     out = self.exec_net.requests[dev].outputs["prob_emotion"].flatten()
                     emotion = LABELS[int(np.argmax(out))]
+
                     if emotion == "happy":
-                        servoUp()
-                    else if emotion == "sad":
-                        servoDown()
+    			setServosHappy()
+		    else if emotion == "sad":
+                        setServosSad()
+                    else if emotion == "anger":
+                        setServosAngry()
+                    else:
+                        setServosNeutral()
+
                     detection_list.extend([emotion])
                     self.resultsEm.put([detection_list])
                     self.inferred_request[dev] = 0
@@ -494,12 +503,34 @@ if __name__ == '__main__':
         print("\n\nFinished\n\n")
 
 
-def servoUp():
-    servo.max()
+def setServosHappy():
+    angryServo.min()
     sleep(1)
+    sadServo.min()
+    sleep(1)
+    happyServo.max()
     print("Happiness detected.")
 
-def servoDown():
-    servo.min()
+def setServosSad():
+    angryServo.min()
     sleep(1)
+    happyServo.min()
+    sleep(1)
+    sadServo.max()
     print("Sadness detected.")
+
+def setServosAngry():
+    happyServo.min()
+    sleep(1)
+    sadServo.min()
+    sleep(1)
+    angryServo.max()
+    print("Anger detected.")
+
+def setServosNeutral():
+    angryServo.min()
+    sleep(1)
+    sadServo.min()
+    sleep(1)
+    happyServo.min()
+    print("Neutral emotions detected.")
