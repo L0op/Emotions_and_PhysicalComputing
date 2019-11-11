@@ -1,2 +1,5 @@
 # Emotions_and_PhysicalComputing
- Physical computing device that leverages two Intel Neural Compute Sticks, a Raspberry Pi, and some electronic components.  Device lets users emotional state impact the physical world.
+
+ Artificial Intelligence (AI) promises to bring the power of the human brain to silicon-based electronics. No longer within the realm of science fiction, AI technology can now be used on low-cost, low-powered edge computing devices. In this article, we leverage AI to bring a bit of fun to a physical computing project.
+ 
+ https://www.mouser.com/applications/empower-emotions-physical-world/
